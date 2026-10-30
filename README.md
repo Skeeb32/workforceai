@@ -7,10 +7,12 @@ WorkforceAI is an early SaaS MVP concept for coordinating specialized AI employe
 ## Features in this MVP
 
 - Command center with workforce, task, project, and approval summaries.
-- Six sample AI employee profiles and employee marketplace-style directory.
+- Eight sample AI employee profiles and employee marketplace-style directory.
+- Customer controls to enable or pause each of eight specialist agents, with those preferences saved in the browser preview.
+- Workflow-level agent selection so customers choose which enabled specialists handle each objective.
 - Task creation, search, task queue, and browser-local persistence.
 - Approval queue with approve and return-for-changes decisions.
-- Product feature workflow that calls four specialist roles in sequence: Product Manager, Business Analyst, Software Engineer, and QA Engineer.
+- Workflow runner that calls the selected specialist roles in sequence and passes each draft to the next specialist.
 - Human review required for generated output. The workflow endpoint cannot publish, deploy, send messages, or change external systems.
 - Supabase/PostgreSQL schema with organization membership, tenant-scoped records, and row-level security policies.
 - Responsive layout and keyboard accessible buttons, forms, and dialogs.

@@ -3,6 +3,7 @@
 ## Implemented in this MVP preview
 
 - Responsive command center, employee directory, task list, workflow overview, approvals, and deliverables views.
+- Customer controls to enable/pause specialists globally and select the agents for each workflow.
 - Create task, browser-local task persistence, text search, approve/return approval actions.
 - Four-step AI workflow API with server-side key handling and human-review response.
 - Initial PostgreSQL schema and tenant RLS policies.

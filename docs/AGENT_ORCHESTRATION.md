@@ -1,6 +1,6 @@
 # Agent orchestration
 
-The current workflow prototype accepts one objective and invokes four distinct specialist prompts sequentially: Product Manager, Business Analyst, Software Engineer, and QA Engineer. Each specialist receives the preceding draft reports, returns a draft report, and has no tools or external side effects. The API has a fixed four-step bound.
+The customer preview can enable or pause eight predefined specialists and select a subset for each workflow. The API accepts only known specialist IDs, validates the selected list, invokes those specialists sequentially, and passes earlier draft reports to later roles. Each step has no tools or external side effects. The API has an eight-step bound.
 
 ## Durable production flow
 

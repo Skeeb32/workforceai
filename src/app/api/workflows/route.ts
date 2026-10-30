@@ -1,25 +1,35 @@
 import { NextResponse } from "next/server";
 
 const roles = [
-  { title: "Product Manager", focus: "Turn the objective into clear requirements, user stories, and acceptance criteria." },
-  { title: "Business Analyst", focus: "Identify business assumptions, risks, and success measures." },
-  { title: "Software Engineer", focus: "Propose a practical implementation plan and key technical decisions. Do not claim code was written." },
-  { title: "QA Engineer", focus: "Create a focused test strategy and call out edge cases." },
+  { id: "project-manager", title: "Project Manager", focus: "Break the objective into a clear plan, sequence, owners, milestones, and risks." },
+  { id: "product-manager", title: "Product Manager", focus: "Turn the objective into clear requirements, user stories, and acceptance criteria." },
+  { id: "business-analyst", title: "Business Analyst", focus: "Identify business assumptions, user needs, risks, and success measures." },
+  { id: "software-engineer", title: "Software Engineer", focus: "Propose a practical implementation plan and key technical decisions. Do not claim code was written." },
+  { id: "qa-engineer", title: "QA Engineer", focus: "Create a focused test strategy and call out edge cases." },
+  { id: "marketing-manager", title: "Marketing Manager", focus: "Identify the audience, positioning, and a practical go-to-market or campaign plan." },
+  { id: "customer-support", title: "Customer Support", focus: "Consider customer questions, support workflows, escalation needs, and customer-facing clarity." },
+  { id: "sales-representative", title: "Sales Representative", focus: "Identify buyer needs, qualification questions, and useful sales enablement opportunities." },
 ];
 
 export async function POST(request: Request) {
-  let body: { objective?: unknown };
+  let body: { objective?: unknown; selectedAgents?: unknown };
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 }); }
   const objective = typeof body.objective === "string" ? body.objective.trim() : "";
   if (objective.length < 8 || objective.length > 1200) {
     return NextResponse.json({ error: "Objective must be between 8 and 1,200 characters." }, { status: 400 });
+  }
+  if (!Array.isArray(body.selectedAgents) || body.selectedAgents.length < 1 || body.selectedAgents.length > roles.length ||
+      body.selectedAgents.some((id) => typeof id !== "string" || !roles.some((role) => role.id === id)) ||
+      new Set(body.selectedAgents).size !== body.selectedAgents.length) {
+    return NextResponse.json({ error: "Choose between 1 and 8 valid agents for this workflow." }, { status: 400 });
   }
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json({ error: "AI execution is not configured. Add OPENAI_API_KEY to the server environment." }, { status: 503 });
   }
 
   const reports: { role: string; content: string }[] = [];
-  for (const role of roles) {
+  const selectedRoles = body.selectedAgents.map((id) => roles.find((role) => role.id === id)!);
+  for (const role of selectedRoles) {
     let response: Response;
     try {
       const handoff = reports.length
@@ -50,5 +60,5 @@ export async function POST(request: Request) {
     if (!content) return NextResponse.json({ error: `${role.title} returned no deliverable.` }, { status: 502 });
     reports.push({ role: role.title, content });
   }
-  return NextResponse.json({ objective, reports, requiresHumanReview: true });
+  return NextResponse.json({ objective, agents: selectedRoles.map(({ id, title }) => ({ id, title })), reports, requiresHumanReview: true });
 }
